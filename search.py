@@ -7,6 +7,17 @@ import pptx
 import re # https://docs.python.org/3/library/re.html
 
 """
+Quickstart:
+keyword search; case sensitive:
+    python3 search.py . SmartArt
+
+keyword search; case insensitive:
+    python3 search.py . '(?i)smartart'
+
+regex for string with character x or z
+    python3 search.py . [xz]
+
+
 https://automatetheboringstuff.com/chapter13/
 
 options for searching document content:
@@ -20,9 +31,13 @@ https://python-docx.readthedocs.io/en/latest/user/documents.html
 
 https://python-pptx.readthedocs.io/en/latest/
 
-LATER
-extract headers too: https://stackoverflow.com/a/54281094/1164295
-https://python-docx.readthedocs.io/en/latest/user/hdrftr.html
+# LATER
+
+* extract headers too: https://stackoverflow.com/a/54281094/1164295
+    https://python-docx.readthedocs.io/en/latest/user/hdrftr.html
+
+* get text from PDFs
+
 """
 
 def open_docx_file(path_to_docx: str) -> str:
@@ -49,7 +64,7 @@ def search_docx(this_regex_search_string:str):
         if result: # no match results in None
             print(this_filename, "has the string", result.group(0))
             match_count+=1
-    print("\nthere were",match_count,"files that contain",args.regex_search_string)
+    print("\n --> there were",match_count,"docx files that contain",args.regex_search_string,"\n")
 
 
 def search_pptx(this_regex_search_string:str):
@@ -64,7 +79,7 @@ def search_pptx(this_regex_search_string:str):
         if result: # no match results in None
             print(this_filename, "has the string", result.group(0))
             match_count+=1
-    print("\nthere were",match_count,"files that contain",args.regex_search_string)
+    print("\n --> there were",match_count,"pptx files that contain",args.regex_search_string,"\n")
 
 
 def open_pptx_file(path_to_pptx: str) -> str:
@@ -85,7 +100,12 @@ def open_pptx_file(path_to_pptx: str) -> str:
 
 def arg_parse():
     theparser = argparse.ArgumentParser(
-        description="search a directory for a regex", allow_abbrev=False
+        description="""
+        About: search a directory for a regex
+        If you want to find the word
+        SmartArt
+        but want to search case insensitive, use 
+        '(?i)smartart'""", allow_abbrev=False
     )
 
     # ********** begin argparse configuration *****************
@@ -115,11 +135,7 @@ if __name__ == "__main__":
     #print("args=", args.folder_path, args.regex_search_string)
 
     search_docx(args.regex_search_string)
-
-    list_of_files = glob.glob("**/*.pptx", recursive=True)
-    for this_filename in list_of_files:
-        out = open_pptx_file(this_filename)
-        print(out)
+    search_pptx(args.regex_search_string)
 
 
 # EOF
